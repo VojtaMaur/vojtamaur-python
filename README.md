@@ -1,34 +1,34 @@
 # vojtamaur
 
-Malý `pip install` CLI nástroj pro práci s veřejnými textovými artefakty webu [vojtamaur.cz](https://vojtamaur.cz/):
+A small `pip install` CLI tool for working with the public text artifacts of [vojtamaur.cz](https://vojtamaur.cz/):
 
 - `ALL_POSTS.txt`
 - `ARCHIVE.txt`
-- dokumentace na `/documentation/`
+- the documentation page at `/documentation/`
 
-Není to parser webu, crawler, CMS, synchronizační démon ani další pokus lidstva udělat z textového souboru platformu. Pracuje hlavně s publikovanými plaintext/HTML endpointy a drží poslední úspěšně staženou kopii v cache.
+This is not a website parser, crawler, CMS, sync daemon, or another heroic attempt to turn a text file into a platform. It works mainly with published plaintext/HTML endpoints and keeps the last successfully fetched copy in a local cache.
 
-## Instalace
+## Installation
 
-Lokálně z repozitáře:
+Install locally from the repository:
 
 ```bash
 python -m pip install .
 ```
 
-Při vývoji:
+For development:
 
 ```bash
 python -m pip install -e .
 ```
 
-Po publikaci na PyPI:
+After publication on PyPI:
 
 ```bash
 python -m pip install vojtamaur
 ```
 
-## Rychlé použití
+## Quick usage
 
 ```bash
 vojtamaur --help
@@ -51,37 +51,37 @@ vojtamaur open docs
 vojtamaur open archive-link 1
 ```
 
-## Zdrojová logika
+## Source logic
 
-Pro každý artefakt se zkouší:
+For each artifact, the tool tries:
 
-1. primární URL na `https://vojtamaur.cz/`
-2. fallback URL na `https://vojtamaur.neocities.org/`
-3. lokální cache
+1. the primary URL on `https://vojtamaur.cz/`
+2. the fallback URL on `https://vojtamaur.neocities.org/`
+3. the local cache
 
-Pokud selže síť i cache, příkaz skončí chybou. Žádná magie, žádný nekonečný retry rituál, žádná služba běžící na pozadí.
+If both the network and the cache fail, the command exits with an error. No magic, no infinite retry ritual, no background service quietly doing suspicious little things.
 
 ## Cache
 
-Cache se ukládá podle platformy:
+The cache is stored according to the platform:
 
 - Windows: `%LOCALAPPDATA%/vojtamaur/`
 - macOS: `~/Library/Caches/vojtamaur/`
-- Linux/Unix: `$XDG_CACHE_HOME/vojtamaur/` nebo `~/.cache/vojtamaur/`
+- Linux/Unix: `$XDG_CACHE_HOME/vojtamaur/` or `~/.cache/vojtamaur/`
 
-Override:
+Override on Windows CMD:
 
-```bash
+```bat
 set VOJTAMAUR_CACHE_DIR=C:\temp\vojtamaur-cache
 ```
 
-nebo na Unixu:
+Override on Unix-like systems:
 
 ```bash
 export VOJTAMAUR_CACHE_DIR=/tmp/vojtamaur-cache
 ```
 
-## Offline režim
+## Offline mode
 
 ```bash
 vojtamaur posts --offline
@@ -90,43 +90,59 @@ vojtamaur docs --offline
 vojtamaur stats --offline
 ```
 
-Nebo globálně přes prostředí:
+Or globally through the environment.
+
+Windows CMD:
+
+```bat
+set VOJTAMAUR_OFFLINE=1
+```
+
+Unix-like systems:
 
 ```bash
 export VOJTAMAUR_OFFLINE=1
 ```
 
-Offline režim používá pouze poslední uloženou cache. Pokud cache neexistuje, skončí chybou. Šokující, ale prázdná cache neumí číst myšlenky.
+Offline mode uses only the latest cached copy. If the cache does not exist, the command exits with an error. Shocking, but an empty cache cannot read minds.
 
 ## Timeout
 
-Výchozí timeout je 3 sekundy.
+The default timeout is 3 seconds.
 
 ```bash
 vojtamaur status --timeout 5
 ```
 
-Nebo:
+Or through the environment.
+
+Windows CMD:
+
+```bat
+set VOJTAMAUR_TIMEOUT=5
+```
+
+Unix-like systems:
 
 ```bash
 export VOJTAMAUR_TIMEOUT=5
 ```
 
-## Příkazy
+## Commands
 
 ### `posts`
 
-Zobrazí nebo uloží `ALL_POSTS.txt`.
+Prints or saves `ALL_POSTS.txt`.
 
 ```bash
 vojtamaur posts
 vojtamaur posts --save
-vojtamaur posts --save moje_kopie.txt
+vojtamaur posts --save my_copy.txt
 ```
 
 ### `archive`
 
-Zobrazí nebo uloží `ARCHIVE.txt`.
+Prints or saves `ARCHIVE.txt`.
 
 ```bash
 vojtamaur archive
@@ -135,7 +151,7 @@ vojtamaur archive --save
 
 ### `docs`
 
-Stáhne dokumentaci z `/documentation/`. Bez parametrů vypíše jednoduchý textový výtah z HTML. S `--raw` vypíše původní HTML. S `--save` uloží raw HTML.
+Fetches the documentation from `/documentation/`. Without options, it prints a simple plain-text extraction from the HTML. With `--raw`, it prints the original HTML. With `--save`, it saves the raw HTML.
 
 ```bash
 vojtamaur docs
@@ -145,7 +161,7 @@ vojtamaur docs --save
 
 ### `grep`
 
-Prohledá `ALL_POSTS.txt` jako prostý text.
+Searches `ALL_POSTS.txt` as plain text.
 
 ```bash
 vojtamaur grep DullGPT
@@ -155,7 +171,7 @@ vojtamaur grep Metaweb --case-sensitive
 
 ### `search-url`
 
-Prohledá URL nalezené v `ARCHIVE.txt`.
+Searches URLs found in `ARCHIVE.txt`.
 
 ```bash
 vojtamaur search-url arquivo
@@ -164,7 +180,7 @@ vojtamaur search-url archive.today
 
 ### `stats`
 
-Vypíše základní statistiky: velikost, počet znaků, slov, řádků, záznamů, unikátních slugů, jazyků, sekcí a počet unikátních archivních odkazů.
+Prints basic statistics: size, character count, word count, line count, entry count, unique slugs, languages, sections, and the number of unique archive links.
 
 ```bash
 vojtamaur stats
@@ -172,7 +188,7 @@ vojtamaur stats
 
 ### `head`
 
-Vypíše prvních N řádků `ALL_POSTS.txt`.
+Prints the first N lines of `ALL_POSTS.txt`.
 
 ```bash
 vojtamaur head
@@ -181,34 +197,34 @@ vojtamaur head 80
 
 ### `random`
 
-Vybere náhodnou URL z `URL:` hlaviček v `ALL_POSTS.txt`.
+Selects a random URL from the `URL:` headers in `ALL_POSTS.txt`.
 
 ```bash
 vojtamaur random
 vojtamaur random --print-only
 ```
 
-Výchozí chování URL i otevře v prohlížeči.
+By default, the selected URL is also opened in the browser.
 
 ### `status`
 
-Zkontroluje URL nalezené v `ARCHIVE.txt`.
+Checks URLs found in `ARCHIVE.txt`.
 
 ```bash
 vojtamaur status
 vojtamaur status --limit 10
 ```
 
-Používá `HEAD`, při některých selháních zkusí `GET`. U plain HTTP odkazů vypíše `INSECURE_HTTP`.
+It uses `HEAD` first and falls back to `GET` for some failures. Plain HTTP links are marked as `INSECURE_HTTP`.
 
 ### `verify`
 
-Provede hrubý health check:
+Runs a rough health check:
 
-- primární a fallback zdroje pro `posts`, `archive`, `docs`
-- čitelnost cache adresáře
-- dekódování cache souborů, pokud existují
-- parsování URL z `ALL_POSTS.txt` a `ARCHIVE.txt`
+- primary and fallback sources for `posts`, `archive`, and `docs`
+- cache directory writability
+- cache file decoding, if cache files exist
+- URL parsing from `ALL_POSTS.txt` and `ARCHIVE.txt`
 
 ```bash
 vojtamaur verify
@@ -216,7 +232,7 @@ vojtamaur verify
 
 ### `open`
 
-Otevře známý cíl nebo URL. U `posts`, `archive` a `docs` otevře normálně kanonickou online URL. S `--offline` otevře odpovídající soubor z lokální cache, tedy `ALL_POSTS.txt`, `ARCHIVE.txt` nebo `documentation.html`. Ano, offline režim konečně neotevírá internet. Civilizace udělala jeden krok vpřed.
+Opens a known target or an explicit URL. For `posts`, `archive`, and `docs`, the normal behavior is to open the canonical online URL. With `--offline`, it opens the corresponding local cache file: `ALL_POSTS.txt`, `ARCHIVE.txt`, or `documentation.html`. In other words, offline mode does not open the internet. A modest but meaningful civilizational improvement.
 
 ```bash
 vojtamaur open site
@@ -232,27 +248,27 @@ vojtamaur open archive-link 1
 vojtamaur open https://vojtamaur.cz/metawebovy-clanek/
 ```
 
-## Co to nedělá
+## What it does not do
 
-- neparsuje HTML webu jako zdroj článků
-- nestahuje markdown source soubory
-- nesynchronizuje repozitář
-- nedělá diff
-- neukládá databázi
-- neběží na pozadí
-- nepoužívá runtime závislosti
+- it does not parse the rendered website as the source of articles
+- it does not download Markdown source files
+- it does not synchronize the repository
+- it does not generate diffs
+- it does not store a database
+- it does not run in the background
+- it does not use runtime dependencies
 
-## Omezení
+## Limitations
 
-`ALL_POSTS.txt` je textový export, ne kompletní replika webu. Média, iframy, PDF a některé dlouhé bloky jsou v něm nahrazené placeholdery nebo vynechané. To je záměr. Nástroj pracuje s tímto textovým sedimentem, ne s plným renderovaným webem.
+`ALL_POSTS.txt` is a text export, not a complete replica of the website. Media, iframes, PDFs, and some long blocks are replaced by placeholders or omitted. This is intentional. The tool works with this text sediment, not with the full rendered website.
 
-## Testy
+## Tests
 
 ```bash
 python -m unittest
 ```
 
-## Publikace
+## Publishing
 
 Build:
 
@@ -261,4 +277,4 @@ python -m pip install build
 python -m build
 ```
 
-Upload na TestPyPI/PyPI řeš přes Trusted Publishing v GitHub Actions nebo ručně přes Twine. PyPI účet bude potřeba. Ano, další účet. Digitální svět je v podstatě nekonečná sbírka branek s heslem.
+Upload to TestPyPI/PyPI either through Trusted Publishing in GitHub Actions or manually with Twine. A PyPI account is required. Yes, another account. The digital world is basically an infinite collection of password-protected gates.
