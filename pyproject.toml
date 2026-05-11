@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vojtamaur"
+version = "0.1.1"
+description = "CLI access to ALL_POSTS.txt, ARCHIVE.txt and documentation from vojtamaur.cz"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Vojta Maur" }
+]
+keywords = ["archive", "cli", "plaintext", "static-site", "vojtamaur"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: End Users/Desktop",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Utilities",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://vojtamaur.cz/"
+Documentation = "https://vojtamaur.cz/documentation/"
+Archive = "https://vojtamaur.cz/ARCHIVE.txt"
+Source = "https://github.com/VojtaMaur/vojtamaur"
+
+[project.scripts]
+vojtamaur = "vojtamaur.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
