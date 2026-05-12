@@ -1,0 +1,39 @@
+=== ENTRY POINTS START ===
+MAIN SITE (primary live version):
+https://vojtamaur.cz/
+
+ALTERNATIVE DEPLOYMENTS:
+Neocities
+https://vojtamaur.neocities.org/
+
+SOURCE REPOSITORY (canonical source):
+https://github.com/VojtaMaur/vojtamaur-web
+
+COPIES OF GITHUB REPOSITORY:
+GitLab
+https://gitlab.com/vojta.maur/vojtamaur-web
+Codeberg
+https://codeberg.org/vojta_maur/vojtamaur-web
+Software Heritage (archival ingest of repository)
+https://archive.softwareheritage.org/browse/origin/directory/?origin_url=https://github.com/VojtaMaur/vojtamaur-web
+
+STATIC SNAPSHOTS (built output of the repository, reconstructable):
+GitHub Releases
+https://github.com/VojtaMaur/vojtamaur-web/releases/
+Zenodo
+https://zenodo.org/records/19691321
+Internet Archive
+https://archive.org/details/vojtamaur-2026-04
+https://archive.org/details/vojtamaur-2026-05
+=== ENTRY POINTS END ===
+
+NOTE:
+This is the embedded package fallback snapshot bundled with the vojtamaur Python package.
+Before publishing a release, refresh this file from the live ARCHIVE.txt endpoint:
+python scripts/refresh_embedded_data.py
+
+PRIMARY ARCHIVE ENDPOINT:
+https://vojtamaur.cz/ARCHIVE.txt
+
+FALLBACK ARCHIVE ENDPOINT:
+https://vojtamaur.neocities.org/ARCHIVE.txt

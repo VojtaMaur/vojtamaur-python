@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vojtamaur"
-version = "0.1.1"
+version = "0.1.3"
 description = "CLI access to ALL_POSTS.txt, ARCHIVE.txt and documentation from vojtamaur.cz"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -32,10 +32,13 @@ dependencies = []
 Homepage = "https://vojtamaur.cz/"
 Documentation = "https://vojtamaur.cz/documentation/"
 Archive = "https://vojtamaur.cz/ARCHIVE.txt"
-Source = "https://github.com/VojtaMaur/vojtamaur"
+Source = "https://github.com/VojtaMaur/vojtamaur-python"
 
 [project.scripts]
 vojtamaur = "vojtamaur.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+vojtamaur = ["data/*.txt"]

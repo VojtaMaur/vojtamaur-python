@@ -10,8 +10,9 @@ import sys
 from pathlib import Path
 
 from .browser import ProbeResult, is_http_url, open_file_path, open_http_url, probe_url
-from .constants import DATASETS, DEFAULT_HEAD_LINES, DEFAULT_TIMEOUT, FALLBACK_SITE, PRIMARY_SITE, __version__
+from .constants import DATASETS, DEFAULT_HEAD_LINES, DEFAULT_TIMEOUT, FALLBACK_SITE, PRIMARY_SITE, __version__, source_kind_for_index
 from .fetch import FetchError, FetchResult, decode_utf8_sig, fetch_dataset, fetch_url, source_urls
+from .embedded import has_embedded_dataset, read_embedded_dataset, embedded_source_url
 from .parse import (
     compute_posts_stats,
     extract_archive_urls,
@@ -118,12 +119,38 @@ def command_grep(args: argparse.Namespace) -> int:
 
 def command_search_url(args: argparse.Namespace) -> int:
     result = fetch_dataset("archive", offline=args.offline, timeout=args.timeout)
-    urls = extract_archive_urls(result.text)
     query = " ".join(args.query)
     needle = query.casefold()
-    found = [url for url in urls if needle in url.casefold()]
-    for idx, url in enumerate(found, start=1):
-        print(f"{idx}: {url}")
+
+    # ARCHIVE.txt is intentionally a semi-structured text artifact, not a
+    # strict URL database. Search raw lines first so nested archive URLs such as
+    # https://web.archive.org/web/.../https://vojtamaur.cz/ALL_POSTS.txt
+    # are not lost or mangled by URL extraction.
+    found: list[str] = []
+    seen: set[str] = set()
+
+    for line in result.text.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if needle not in stripped.casefold():
+            continue
+
+        http_pos = stripped.find("http://")
+        https_pos = stripped.find("https://")
+        positions = [pos for pos in (http_pos, https_pos) if pos != -1]
+
+        if positions:
+            value = stripped[min(positions):]
+        else:
+            value = stripped
+
+        if value not in seen:
+            seen.add(value)
+            found.append(value)
+
+    for idx, value in enumerate(found, start=1):
+        print(f"{idx}: {value}")
     if not found:
         print(f"no URL matches: {query}", file=sys.stderr)
         return EXIT_NEGATIVE
@@ -195,7 +222,7 @@ def command_verify(args: argparse.Namespace) -> int:
     print("=============")
     for kind in ("posts", "archive", "docs"):
         for idx, url in enumerate(source_urls(kind)):
-            source_kind = "main" if idx == 0 else "fallback"
+            source_kind = source_kind_for_index(idx)
             try:
                 raw = fetch_url(url, timeout=args.timeout)
                 decode_utf8_sig(raw)
@@ -203,6 +230,21 @@ def command_verify(args: argparse.Namespace) -> int:
             except Exception as exc:
                 failures += 1
                 print(f"[FAIL] {kind}:{source_kind} {url} | {type(exc).__name__}: {exc}")
+
+    print("\npackage checks")
+    print("==============")
+    for kind in ("posts", "archive"):
+        try:
+            if not has_embedded_dataset(kind):
+                failures += 1
+                print(f"[FAIL] embedded {kind}: missing")
+                continue
+            raw = read_embedded_dataset(kind)
+            decode_utf8_sig(raw)
+            print(f"[OK] embedded {kind}: {embedded_source_url(kind)} ({len(raw)} bytes)")
+        except Exception as exc:
+            failures += 1
+            print(f"[FAIL] embedded {kind} | {type(exc).__name__}: {exc}")
 
     print("\ncache checks")
     print("============")

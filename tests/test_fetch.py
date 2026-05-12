@@ -36,7 +36,7 @@ class FetchTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             with mock.patch("vojtamaur.paths.cache_dir", return_value=Path(tmp)):
                 with self.assertRaises(FetchError):
-                    fetch_dataset("archive", offline=True)
+                    fetch_dataset("docs", offline=True)
 
 
 if __name__ == "__main__":
